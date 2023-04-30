@@ -4,7 +4,7 @@ import rospy
 from std_msgs.msg import Int32 
 
 if __name__ == '__main__':
-    rospy.init_node('topic_publicador')
+    rospy.init_node('nodo_publicador')
     rospy.loginfo('Nodo inicializado')
 
     pub = rospy.Publisher('contador', Int32, queue_size=10)
