@@ -58,6 +58,7 @@ add_message_files(
 add_service_files(
   FILES
   Mi_servicio.srv
+  Area_rectangle.srv
 )
 
 ## Generate actions in the 'action' folder
