@@ -103,6 +103,7 @@ def rotate (angular_speed_degree, relative_angle_degree, clockwise):
     velocity_message.angular.z =0
     velocity_publisher.publish(velocity_message)
 
+# posicion final: eje x, eje y
 def go_to_goal(x_goal, y_goal):
     global x
     global y, yaw
@@ -111,7 +112,7 @@ def go_to_goal(x_goal, y_goal):
     cmd_vel_topic='/turtle1/cmd_vel'
 
     while (True):
-        # ------------- VELOCIDAD LINEAL -------------
+        # ------------- VELOCIDAD LINEAL - CONTROL P -------------
         # factor k lineal
         K_linear = 0.5 
         # calculo de la distancia usando la posicion de inicio y la posicion de fin
@@ -120,7 +121,7 @@ def go_to_goal(x_goal, y_goal):
         # velocidad lineal final
         linear_speed = distance * K_linear
 
-        # ------------- VELOCIDAD ANGULAR -------------
+        # ------------- VELOCIDAD ANGULAR - CONTROL P -------------
         # factor k angular
         K_angular = 4.0
         # calculo del angulo de rotacion usando la posicion de inicio y la posicion de fin
@@ -141,6 +142,19 @@ def go_to_goal(x_goal, y_goal):
             print('Posicion final alcanzada')
             break
 
+# angulo deseado
+def setDesiredOrientation(desired_angle_radians):
+    # validar si el angulo es menor al angulo deseado menos el actual
+    relative_angle_radians = desired_angle_radians - yaw
+    if relative_angle_radians < 0:
+        clockwise = 1 # 1 provoca True (giro horario)
+    else:
+        clockwise = 0 # 0 provoca False (giro anti-horario)
+    print (relative_angle_radians)
+    print (desired_angle_radians)
+    # llama a la funcion para rotar el robot
+    rotate(30 ,math.degrees(abs(relative_angle_radians)), clockwise)
+
 if __name__ == '__main__':
     try:
         
@@ -152,11 +166,11 @@ if __name__ == '__main__':
         position_topic = "/turtle1/pose"
         pose_subscriber = rospy.Subscriber(position_topic, Pose, poseCallback)
 
- 
         time.sleep(2)
         #move (velocity_publisher,1.0, 3.0, is_forward=True)
         #rotate (30, 45, clockwise=False)
-        go_to_goal(11.5, 8)
+        #go_to_goal(8, 7)
+        setDesiredOrientation(math.radians(90))
 
         #time.sleep(2)
         #print ('Inicia reset: ')
