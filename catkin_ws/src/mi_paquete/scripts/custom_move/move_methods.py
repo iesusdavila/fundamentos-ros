@@ -7,14 +7,18 @@ import math
 import time
 from std_srvs.srv import Empty
 
+# detectar posicion y rotacion del robot
 def poseCallback(pose_message):
+    # detecta los cambios de posicion en x,y
+    # detecta los cambios de rotacion en el eje z (yaw)
+    # el eje z y la rotacion sobre x,y no son tomados en cuenta
     global x
     global y, yaw
     x= pose_message.x
     y= pose_message.y
     yaw = pose_message.theta
 
-# publicador, velocidad, disntancia en el eje x, va hacia delante?
+# publicador, velocidad, distancia en el eje x, va hacia delante?
 def move(velocity_publisher,speed, distance, is_forward):
     velocity_message = Twist()
     
@@ -29,31 +33,33 @@ def move(velocity_publisher,speed, distance, is_forward):
     else:
         velocity_message.linear.x = -abs(speed)
 
+    # inicializa la distancia movida
     distance_moved = 0.0
-    loop_rate = rospy.Rate(10) 
+    loop_rate = rospy.Rate(10) # 10 mensajes por segundo 
 
     while True :
-        rospy.loginfo("Turtlesim moviendose!")
+        rospy.loginfo("Turtlesim moviendose sobre el eje x!")
         velocity_publisher.publish(velocity_message)
         loop_rate.sleep()
 
         # calculo de la distanca movida
         distance_moved = abs(math.sqrt(((x-x0) ** 2) + ((y-y0) ** 2)))
-        print(distance_moved)
+        print(f'Distancia recorrida: {distance_moved}')
         # validar si la distancia por mover supera a la distancia establecida
-        if  (distance_moved>=distance):
-            rospy.loginfo("Distancia alcanzada")
+        if(distance_moved>=distance):
+            rospy.loginfo("Distancia completada")
             break
             
     # detener el robot una vez completada la trayectoria
     velocity_message.linear.x =0
     velocity_publisher.publish(velocity_message)
 
-# velocidad angular, angulo de rotacion, va en sentido horario?
+# velocidad angular, angulo de rotacion (en grados), va en sentido horario?
 def rotate (angular_speed_degree, relative_angle_degree, clockwise):
     
     global yaw
     velocity_message = Twist()
+    # para rotar necesita que el robot este detenido completamente
     velocity_message.linear.x=0
     velocity_message.linear.y=0
     velocity_message.linear.z=0
@@ -61,7 +67,7 @@ def rotate (angular_speed_degree, relative_angle_degree, clockwise):
     velocity_message.angular.y=0
     velocity_message.angular.z=0
 
-    # obtener la velocidad actual
+    # obtener la rotacion sobre el eje z
     theta0=yaw
 
     # transformar de grados a radianes
@@ -75,28 +81,29 @@ def rotate (angular_speed_degree, relative_angle_degree, clockwise):
 
     # movimiento del angulo empieza en 0
     angle_moved = 0.0
-    loop_rate = rospy.Rate(10) 
+    loop_rate = rospy.Rate(10) # envia 10 mensajes por segundo
 
 
     cmd_vel_topic='/turtle1/cmd_vel'
     velocity_publisher = rospy.Publisher(cmd_vel_topic, Twist, queue_size=10)
 
+    # tiempo actual en segundos
     t0 = rospy.Time.now().to_sec()
 
     while True :
-        rospy.loginfo("Turtlesim rotates")
+        rospy.loginfo("Turtlesim rotando")
         velocity_publisher.publish(velocity_message)
 
         # tiempo actual en segundos
         t1 = rospy.Time.now().to_sec()
 
-        # formula de movimiento angular theta=deltaT*velocidadAngular
+        # formula de movimiento angular theta=deltaT*(velocidad angular)
         current_angle_degree = (t1-t0)*angular_speed_degree
         loop_rate.sleep()
 
-        # validar si alzamos la distancia angular establecida            
+        # validar si alzamos la rotacion establecida            
         if  (current_angle_degree>relative_angle_degree):
-            rospy.loginfo("Rotacion alcanzada")
+            rospy.loginfo("Rotacion completada")
             break
 
     # cuando termine el giro paramos al robot
@@ -109,7 +116,6 @@ def go_to_goal(x_goal, y_goal):
     global y, yaw
 
     velocity_message = Twist()
-    cmd_vel_topic='/turtle1/cmd_vel'
 
     while (True):
         # ------------- VELOCIDAD LINEAL - CONTROL P -------------
@@ -136,7 +142,7 @@ def go_to_goal(x_goal, y_goal):
         
         velocity_publisher.publish(velocity_message)
         
-        print('x=', x, 'y=',y)
+        print(f'Turtlesim moviendose en x: {x}, y:{y}')
 
         if (distance <0.01):
             print('Posicion final alcanzada')
@@ -150,9 +156,10 @@ def setDesiredOrientation(desired_angle_radians):
         clockwise = 1 # 1 provoca True (giro horario)
     else:
         clockwise = 0 # 0 provoca False (giro anti-horario)
-    print (relative_angle_radians)
-    print (desired_angle_radians)
-    # llama a la funcion para rotar el robot
+    print (f'Rotacion del relativa: {relative_angle_radians} [radianes]')
+    print (f'Rotacion deseada: {desired_angle_radians} [radianes]')
+    # llama a la funcion para rotar el robot, con los siguientes parametros
+    # velocidad angular=30, angulo de rotacion=relative_angle_radians, sentido horario=DEPENDE DEL ALGORITMO
     rotate(30 ,math.degrees(abs(relative_angle_radians)), clockwise)
 
 # movimiento en espiral
@@ -161,9 +168,12 @@ def spiralClean():
     loop_rate = rospy.Rate(1)
     wk = 4
     rk = 2
- 
+    
+    # ejecutar mientras no choquemos con la pared
     while((x<10.5) and (y<10.5)):
+        print(f'Robot formando una espiral sobre rk: {rk}, wk: {wk}')
         rk=rk+1
+        # para formar una espiral solo se necesita mover en x y rotar sobre z
         vel_msg.linear.x =rk
         vel_msg.linear.y =0
         vel_msg.linear.z =0
@@ -172,7 +182,8 @@ def spiralClean():
         vel_msg.angular.z =wk
         velocity_publisher.publish(vel_msg)
         loop_rate.sleep()
- 
+    
+    # una vez terminado el movimiento en espiral detener el robot
     vel_msg.linear.x = 0
     vel_msg.angular.z = 0
     velocity_publisher.publish(vel_msg)
