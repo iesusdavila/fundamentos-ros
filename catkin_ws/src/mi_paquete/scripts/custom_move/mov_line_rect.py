@@ -155,6 +155,28 @@ def setDesiredOrientation(desired_angle_radians):
     # llama a la funcion para rotar el robot
     rotate(30 ,math.degrees(abs(relative_angle_radians)), clockwise)
 
+# movimiento en espiral
+def spiralClean():
+    vel_msg = Twist()
+    loop_rate = rospy.Rate(1)
+    wk = 4
+    rk = 2
+ 
+    while((x<10.5) and (y<10.5)):
+        rk=rk+1
+        vel_msg.linear.x =rk
+        vel_msg.linear.y =0
+        vel_msg.linear.z =0
+        vel_msg.angular.x = 0
+        vel_msg.angular.y = 0
+        vel_msg.angular.z =wk
+        velocity_publisher.publish(vel_msg)
+        loop_rate.sleep()
+ 
+    vel_msg.linear.x = 0
+    vel_msg.angular.z = 0
+    velocity_publisher.publish(vel_msg)
+
 if __name__ == '__main__':
     try:
         
@@ -169,16 +191,9 @@ if __name__ == '__main__':
         time.sleep(2)
         #move (velocity_publisher,1.0, 3.0, is_forward=True)
         #rotate (30, 45, clockwise=False)
-        #go_to_goal(8, 7)
-        setDesiredOrientation(math.radians(90))
-
-        #time.sleep(2)
-        #print ('Inicia reset: ')
-        #rospy.wait_for_service('reset')
-        #reset_turtle = rospy.ServiceProxy('reset', Empty)
-        #reset_turtle()
-        #print ('Termina reset: ')
-        #rospy.spin()
-       
+        #go_to_goal(2, 4)
+        #setDesiredOrientation(math.radians(90))
+        spiralClean()
+        
     except rospy.ROSInterruptException:
         rospy.loginfo("node terminated.")
