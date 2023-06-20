@@ -10,6 +10,11 @@ project(ros_experiments_irda)
 find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
+  tf
+  geometry_msgs
+  urdf
+  rviz
+  xacro
 )
 
 ## System dependencies are found with CMake's conventions
