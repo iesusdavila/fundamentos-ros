@@ -146,7 +146,7 @@ This link is the base of the arm in which arm is placed -->
     <link name="base_link">
 
     <visual>
-        <origin xyz="0 0 0" rpy="1.5708 0 0" /> <!-- rotate PI/2 -->
+        <origin xyz="0 0 0" rpy="${M_PI/2} 0 0" /> <!-- rotate PI/2 -->
         <geometry>
 
             <box size="0.1 0.1 0.1" />
@@ -156,7 +156,7 @@ This link is the base of the arm in which arm is placed -->
     </visual>
 
     <collision>
-        <origin xyz="0 0 0" rpy="1.5708 0 0" /> <!-- rotate PI/2 -->
+        <origin xyz="0 0 0" rpy="${M_PI/2} 0 0" /> <!-- rotate PI/2 -->
         <geometry>
 
             <box size="0.1 0.1 0.1" />
@@ -174,7 +174,7 @@ This link is the base of the arm in which arm is placed -->
     <joint name="shoulder_pan_joint" type="revolute">
         <parent link="base_link" />
         <child link="shoulder_pan_link" />
-        <origin xyz="0 0 0.05" rpy="0 1.5708 ${M_PI*0}" />
+        <origin xyz="0 0 0.05" rpy="0 ${M_PI/2} ${M_PI*0}" />
         <axis xyz="-1 0 0" />
         <limit effort="300" velocity="1" lower="-2.61799387799" upper="1.98394848567" />
         <dynamics damping="50" friction="1" />
@@ -187,19 +187,19 @@ This link is the base of the arm in which arm is placed -->
     <link name="shoulder_pan_link">
 
     <visual>
-        <origin xyz="0 0 0" rpy="0 1.5708 0" />
+        <origin xyz="0 0 0" rpy="0 ${M_PI/2} 0" />
         <geometry>
 
-            <cylinder radius="0.04" length="0.08" />
+            <cylinder radius="${shoulder_pan_width}" length="${shoulder_pan_len}" />
 
         </geometry>
         <material name="Red" />
     </visual>
 
     <collision>
-        <origin xyz="0 0 0" rpy="0 1.5708 0" />
+        <origin xyz="0 0 0" rpy="0 ${M_PI/2} 0" />
         <geometry>
-            <cylinder radius="0.04" length="0.08" />
+            <cylinder radius="${shoulder_pan_width}" length="${shoulder_pan_len}" />
         </geometry>
     </collision>
     <xacro:inertial_matrix mass="1" />
@@ -212,7 +212,7 @@ This link is the base of the arm in which arm is placed -->
     <joint name="shoulder_pitch_joint" type="revolute">
         <parent link="shoulder_pan_link" />
         <child link="shoulder_pitch_link" />
-        <origin xyz="-0.041 0.0021 0.0" rpy="-1.5708 0 1.5708" />
+        <origin xyz="-0.041 0.0021 0.0" rpy="-${M_PI/2} 0 ${M_PI/2}" />
         <axis xyz="1 0 0" />
         <limit effort="300" velocity="1" lower="-1.19962513147" upper="1.89994105047" />
         <dynamics damping="50" friction="1" />
@@ -223,7 +223,7 @@ This link is the base of the arm in which arm is placed -->
     <link name="shoulder_pitch_link">
 
     <visual>
-        <origin xyz="-0.002 0 0.04" rpy="0 1.5708 0" />
+        <origin xyz="-0.002 0 0.04" rpy="0 ${M_PI/2} 0" />
         <geometry>
 
             <box size="${shoulder_pitch_len} ${shoulder_pitch_width} ${shoulder_pitch_height}" />
@@ -233,7 +233,7 @@ This link is the base of the arm in which arm is placed -->
     </visual>
 
     <collision>
-        <origin xyz="-0.002 0 0.04" rpy="0 1.5708 0" />
+        <origin xyz="-0.002 0 0.04" rpy="0 ${M_PI/2} 0" />
         <geometry>
             <box size="${shoulder_pitch_len} ${shoulder_pitch_width} ${shoulder_pitch_height}" />
         </geometry>
@@ -248,7 +248,7 @@ This link is the base of the arm in which arm is placed -->
     <joint name="elbow_roll_joint" type="revolute">
         <parent link="shoulder_pitch_link" />
         <child link="elbow_roll_link" />
-        <origin xyz="-0.002 0 0.1206" rpy="${M_PI} 1.5708 0" />
+        <origin xyz="-0.002 0 0.1206" rpy="${M_PI} ${M_PI/2} 0" />
         <axis xyz="-1 0 0" />
         <limit effort="300" velocity="1" lower="-2.61799387799" upper="0.705631162427" />
         <dynamics damping="50" friction="1" />
@@ -259,7 +259,7 @@ This link is the base of the arm in which arm is placed -->
     <link name="elbow_roll_link">
 
     <visual>
-        <origin xyz="-0.015 0.0 -0.0" rpy="0 1.5708 0" />
+        <origin xyz="-0.015 0.0 -0.0" rpy="0 ${M_PI/2} 0" />
         <geometry>
 
             <cylinder radius="${elbow_roll_width}" length="${elbow_roll_len}" />
@@ -269,7 +269,7 @@ This link is the base of the arm in which arm is placed -->
     </visual>
 
     <collision>
-        <origin xyz="-0.015 0.0 -0.0" rpy="0 1.5708 0" />
+        <origin xyz="-0.015 0.0 -0.0" rpy="0 ${M_PI/2} 0" />
         <geometry>
             <cylinder radius="${elbow_roll_width}" length="${elbow_roll_len}" />
         </geometry>
@@ -284,7 +284,7 @@ This link is the base of the arm in which arm is placed -->
     <joint name="elbow_pitch_joint" type="revolute">
         <parent link="elbow_roll_link" />
         <child link="elbow_pitch_link" />
-        <origin xyz="-0.035 0 0.0" rpy="0.055 1.5708 0" />
+        <origin xyz="-0.035 0 0.0" rpy="0.055 ${M_PI/2} 0" />
         <axis xyz="1 0 0" />
         <limit effort="300" velocity="1" lower="-1.5953400194" upper="1.93281579274" />
         <dynamics damping="50" friction="1" />
@@ -296,7 +296,7 @@ This link is the base of the arm in which arm is placed -->
     <link name="elbow_pitch_link">
 
     <visual>
-        <origin xyz="0 0 -0.12" rpy="0 1.5708 0" />
+        <origin xyz="0 0 -0.12" rpy="0 ${M_PI/2} 0" />
         <geometry>
 
             <box size="${elbow_pitch_len} ${elbow_pitch_width} ${elbow_pitch_height}" />
@@ -306,7 +306,7 @@ This link is the base of the arm in which arm is placed -->
     </visual>
 
     <collision>
-        <origin xyz="0 0 -0.12" rpy="0 1.5708 0" />
+        <origin xyz="0 0 -0.12" rpy="0 ${M_PI/2} 0" />
         <geometry>
             <box size="${elbow_pitch_len} ${elbow_pitch_width} ${elbow_pitch_height}" />
         </geometry>
@@ -321,7 +321,7 @@ This link is the base of the arm in which arm is placed -->
     <joint name="wrist_roll_joint" type="revolute">
         <parent link="elbow_pitch_link" />
         <child link="wrist_roll_link" />
-        <origin xyz="0.0 0.0081 -.248" rpy="0 1.5708 ${M_PI}" />
+        <origin xyz="0.0 0.0081 -.248" rpy="0 ${M_PI/2} ${M_PI}" />
         <axis xyz="1 0 0" />
         <limit effort="300" velocity="1" lower="-2.61799387799" upper="2.6128806087" />
         <dynamics damping="50" friction="1" />
@@ -330,7 +330,7 @@ This link is the base of the arm in which arm is placed -->
     <!-- WRIST ROLL LINK -->
     <link name="wrist_roll_link">
     <visual>
-        <origin xyz="0 0 0" rpy="0 1.5708 0" />
+        <origin xyz="0 0 0" rpy="0 ${M_PI/2} 0" />
         <geometry>
 
             <cylinder radius="${elbow_roll_width}" length="${elbow_roll_len}" />
@@ -340,7 +340,7 @@ This link is the base of the arm in which arm is placed -->
     </visual>
 
     <collision>
-        <origin xyz="0 0 0" rpy="0 1.5708 0" />
+        <origin xyz="0 0 0" rpy="0 ${M_PI/2} 0" />
         <geometry>
             <cylinder radius="${elbow_roll_width}" length="${elbow_roll_len}" />
         </geometry>
@@ -356,7 +356,7 @@ This link is the base of the arm in which arm is placed -->
     <joint name="wrist_pitch_joint" type="revolute">
         <parent link="wrist_roll_link" />
         <child link="wrist_pitch_link" />
-        <origin xyz="0.0 0.0 0.0001" rpy="0 1.5708 0" />
+        <origin xyz="0.0 0.0 0.0001" rpy="0 ${M_PI/2} 0" />
         <axis xyz="1 0 0" />
         <limit effort="300" velocity="1" lower="-1.5953400194" upper="1.98394848567" />
         <dynamics damping="50" friction="1" />
@@ -368,7 +368,7 @@ This link is the base of the arm in which arm is placed -->
     <link name="wrist_pitch_link">
 
     <visual>
-        <origin xyz="0 0 0.04" rpy="0 1.5708 0" />
+        <origin xyz="0 0 0.04" rpy="0 ${M_PI/2} 0" />
         <geometry>
 
             <box size="${wrist_pitch_len} ${wrist_pitch_width} ${wrist_pitch_height}" />
@@ -378,7 +378,7 @@ This link is the base of the arm in which arm is placed -->
     </visual>
 
     <collision>
-        <origin xyz="0 0 0.04 " rpy="0 1.5708 0" />
+        <origin xyz="0 0 0.04 " rpy="0 ${M_PI/2} 0" />
         <geometry>
             <box size="${wrist_pitch_len} ${wrist_pitch_width} ${wrist_pitch_height}" />
         </geometry>
@@ -409,7 +409,7 @@ This link is the base of the arm in which arm is placed -->
     <link name="gripper_roll_link">
 
     <visual>
-        <origin xyz="0 0 0" rpy="0 1.5708 0" />
+        <origin xyz="0 0 0" rpy="0 ${M_PI/2} 0" />
         <geometry>
 
             <cylinder radius="${gripper_roll_width}" length="${gripper_roll_len}" />
@@ -419,7 +419,7 @@ This link is the base of the arm in which arm is placed -->
     </visual>
 
     <collision>
-        <origin xyz="0 0 0" rpy="0 1.5708 0" />
+        <origin xyz="0 0 0" rpy="0 ${M_PI/2} 0" />
         <geometry>
             <cylinder radius="${gripper_roll_width}" length="${gripper_roll_len}" />
         </geometry>
