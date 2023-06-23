@@ -16,7 +16,7 @@ def move_to_goal(xGoal,yGoal):
     
     # esperamos 5 segundos hasta que se logre conectar al servidor
     while(not ac.wait_for_server(rospy.Duration.from_sec(5.0))):
-        rospy.loginfo("Waiting for the move_base action server to come up")
+        rospy.loginfo("Esperando respuesta del servidor para mover el robot...")
 
     # creamos un objeto para definir el tipo de mensaje a enviar en la accion
     goal = MoveBaseGoal()
@@ -28,13 +28,14 @@ def move_to_goal(xGoal,yGoal):
 
     # definimos la posicion y rotacion final de nuestro robot
     # para la posicion creamos un mensaje de tipo Point
+    # la orientacion esta en cuaterniones, no en grados euler
     goal.target_pose.pose.position =  Point(xGoal,yGoal,0)
     goal.target_pose.pose.orientation.x = 0.0
     goal.target_pose.pose.orientation.y = 0.0
     goal.target_pose.pose.orientation.z = 0.0
     goal.target_pose.pose.orientation.w = 1.0
 
-    rospy.loginfo("Moviendo el robot hasta la posicion de meta ...")
+    rospy.loginfo("Moviendo el robot hasta la posicion de meta...")
     # enviamos la info del mensaje de tipo MoveBaseGoal para mover el robot
     ac.send_goal(goal)
 
