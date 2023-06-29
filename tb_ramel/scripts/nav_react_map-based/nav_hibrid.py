@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import rospy
-import math
 from sensor_msgs.msg import LaserScan
 from geometry_msgs.msg import Twist
 from nav_msgs.msg import Odometry, OccupancyGrid
@@ -79,23 +78,15 @@ def hybrid_navigation():
 
         rate.sleep()
 
-
 # ------ NAVEGACION REACTIVA ------
 def reactive_navigation(cmd_vel):
-    # Implementar tu lógica de navegación reactiva aquí
-    # Puedes utilizar la distancia al obstáculo más cercano y la orientación del robot
-
-    # Ejemplo: Girar en sentido antihorario si hay un obstáculo
+    # Girar en sentido antihorario si hay un obstáculo
     cmd_vel.linear.x = 0.0
     cmd_vel.angular.z = MAX_ANGULAR_VELOCITY
 
-
 # ------ NAVEGACION GLOBAL ------
 def global_navigation(cmd_vel):
-    # Implementar tu lógica de navegación global aquí
-    # Puedes utilizar el mapa y la posición objetivo
-
-    # Ejemplo: Calcular el ángulo hacia el objetivo deseado
+    # Calcular el ángulo hacia el objetivo deseado
     desired_angle = calculate_desired_angle(GOAL_POSITION,robot_pose)
 
     # Calcular el ángulo hacia el objetivo considerando la orientación actual del robot
