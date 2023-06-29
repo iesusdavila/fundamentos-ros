@@ -7,10 +7,10 @@ from nav_msgs.msg import Odometry
 from tf.transformations import euler_from_quaternion
 
 # Constantes de control
-MAX_LINEAR_VELOCITY = 0.2  # Velocidad lineal máxima del robot
-MAX_ANGULAR_VELOCITY = 0.5  # Velocidad angular máxima del robot
-MIN_DISTANCE = 1  # Distancia mínima para considerar un obstaculo
-GOAL_POSITION = [-1, 2.0]  # Posición objetivo
+MAX_LINEAR_VELOCITY = 0.1  # Velocidad lineal máxima del robot
+MAX_ANGULAR_VELOCITY = 0.6  # Velocidad angular máxima del robot
+MIN_DISTANCE = 0.75  # Distancia mínima para considerar un obstaculo
+GOAL_POSITION = [0, 2.5]  # Posición objetivo
 
 # Variables de control
 obstacle_detected = False  # Indicador de detección de obstáculo
@@ -25,9 +25,9 @@ def laser_callback(msg):
     global obstacle_detected, obstacle_distance
 
     # Obtener la distancia más cercana del láser
-    obstacle_distance = min(msg.ranges)
+    obstacle_distance = msg.ranges[0] # obstaculo al frente
 
-    # Verificar si se ha detectado un obstáculo
+    # Verificar si el obstaculo esta a menos de MIN_DISTANCE
     if obstacle_distance < MIN_DISTANCE:
         obstacle_detected = True
     else:
@@ -45,7 +45,7 @@ def odom_callback(msg):
     posicion_x = msg.pose.pose.position.x
     posicion_y = msg.pose.pose.position.y
     
-    print(f'Posicion en las coordenadas: ({posicion_x},{posicion_y})')
+    # Actualizar la lista con las posiciones del robot
     robot_pose[0] = posicion_x
     robot_pose[1] = posicion_y
     robot_pose[2] = yaw # yaw es rotacion sobre el eje z
@@ -59,6 +59,8 @@ def bug_algorithm():
 
     while not rospy.is_shutdown():
         if obstacle_detected:
+            cmd_vel.linear.x = 0.0
+
             # Calcular el ángulo hacia el objetivo deseado
             desired_angle = calculate_desired_angle()
 
@@ -75,9 +77,6 @@ def bug_algorithm():
             distance = calculate_distance_to_goal()
 
             # Detenerse si se encuentra cerca del objetivo
-            print(f'La distancia hasta el objetivo es: {GOAL_POSITION[0] - robot_pose[0]},{GOAL_POSITION[1] - robot_pose[1]}')
-            print(f'La distancia objetivo es: {GOAL_POSITION[0]},{GOAL_POSITION[1]}')
-
             if distance == 0:
                 cmd_vel.linear.x = 0.0
             else:
