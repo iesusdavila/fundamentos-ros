@@ -12,5 +12,5 @@
     </include>
 
     <!-- Map-Based Navigation -->
-    <node name="navigation_move_base" pkg="tb_ramel" type="nav_list_points.py" />
+    <!--<node name="navigation_move_base" pkg="tb_ramel" type="nav_list_points.py" />-->
 </launch>
